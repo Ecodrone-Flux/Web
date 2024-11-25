@@ -34,11 +34,11 @@ app.get('/', (req, res) => {
 
 // Ruta para registrar un usuario
 app.post('/users', async (req, res) => {
-    const { name, email, password, phoneNumber, latitude, longitude } = req.body;
+    const { name, email, password, phoneNumber, latitude, longitude, lastname, address } = req.body;
     try {
       const result = await client.query(
-        'INSERT INTO users (name, email, password, phoneNumber, latitude, longitude) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-        [name, email, password, phoneNumber, latitude, longitude]
+        'INSERT INTO users (name, email, password, phoneNumber, latitude, longitude, lastname, address) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
+        [name, email, password, phoneNumber, latitude, longitude, lastname, address]
       );
       res.json(result.rows[0]);
     } catch (err) {

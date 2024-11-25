@@ -45,7 +45,7 @@ const Sidebar = () => {
           </div>
           <ul>
             <li>
-              <Link to="/new-user">New User</Link>
+              <Link to="/register">New User</Link>
             </li>
             <li>
               <Link to="/users">Users</Link>

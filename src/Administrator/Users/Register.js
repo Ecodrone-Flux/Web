@@ -1,38 +1,42 @@
 import React, { useState, useEffect } from "react";
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
-import "bootstrap/dist/css/bootstrap.min.css";
+import bcrypt from "bcryptjs"; 
 
 function Register() {
   const [name, setName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [lastname, setLastName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [address, setAddress] = useState("Loading...");
-  const [latitude, setLatitude] = useState(-34.603722); // Coordenadas iniciales (Buenos Aires)
-  const [longitude, setLongitude] = useState(-58.381592);
-
+  const [latitude, setLatitude] = useState("");
+  const [longitude, setLongitude] = useState("");
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: "AIzaSyA-dqS5UsYWq-v-iwMTlqUsqh7sAFjgSs8", // Reemplaza con tu clave
+    googleMapsApiKey: "AIzaSyA-dqS5UsYWq-v-iwMTlqUsqh7sAFjgSs8",
   });
 
-  // Obtener la ubicación del usuario al cargar el componente
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        setLatitude(latitude);
-        setLongitude(longitude);
-        fetchAddress(latitude, longitude);
-      },
-      (error) => {
-        console.error("Error getting location: ", error);
-        setAddress("Unable to fetch location");
-      }
-    );
+    // Verificar si geolocalización está disponible
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          console.log("Current position:", { latitude, longitude });
+          setLatitude(latitude);
+          setLongitude(longitude);
+          fetchAddress(latitude, longitude); // Obtener la dirección con las coordenadas
+        },
+        (error) => {
+          console.error("Error getting location: ", error);
+          setAddress("Unable to fetch location");
+        }
+      );
+    } else {
+      console.log("Geolocation is not available in this browser.");
+    }
   }, []);
-
+  
   // Función para obtener la dirección basada en latitud y longitud
   const fetchAddress = async (lat, lng) => {
     try {
@@ -52,7 +56,6 @@ function Register() {
     }
   };
   
-
   // Manejar doble clic en el mapa para actualizar la ubicación y dirección
   const handleMapDblClick = (event) => {
     const newLat = event.latLng.lat();
@@ -62,35 +65,38 @@ function Register() {
     setLongitude(newLng);
     fetchAddress(newLat, newLng); // Actualizar dirección con las nuevas coordenadas
   };
-  
 
+  // Función para cifrar la contraseña antes de enviarla
+  const encryptPassword = (password) => {
+    const salt = bcrypt.genSaltSync(10); // Generar un salt
+    return bcrypt.hashSync(password, salt); // Cifrar la contraseña
+  };
+  
   const registerUser = async () => {
     if (!name || !email || !password || password !== confirmPassword) {
       alert("Please complete all fields correctly");
       return;
     }
-
+    const encryptedPassword = encryptPassword(password);
+    
     const response = await fetch("http://localhost:5000/users", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         name,
-        lastName,
-        phoneNumber,
         email,
-        password,
-        address,
+        password: encryptedPassword,
+        phoneNumber,
         latitude,
         longitude,
+        lastname,
+        address
       }),
     });
-
     const data = await response.json();
     alert(`User ${data.name} registered successfully`);
   };
-
   if (!isLoaded) return <div>Loading map...</div>;
-
   return (
     <div className="container py-3 mx-5">
       <h1 className="mb-4 text-align-start">Register User</h1>
@@ -109,7 +115,7 @@ function Register() {
             type="text"
             className="form-control mb-3"
             placeholder="Last Name"
-            value={lastName}
+            value={lastname}
             onChange={(e) => setLastName(e.target.value)}
           />
           <input
@@ -148,7 +154,6 @@ function Register() {
             readOnly
           />
         </div>
-
         {/* Mapa */}
         <div className="col-md-7 ms-5">
           <h3>Address</h3>
@@ -156,7 +161,7 @@ function Register() {
             center={{ lat: latitude, lng: longitude }}
             zoom={14}
             mapContainerStyle={{ width: "100%", height: "360px", borderRadius: "8px" }}
-            onDblClick={handleMapDblClick} // Manejar doble clic en el mapa
+            onDblClick={handleMapDblClick}
           >
             <Marker position={{ lat: latitude, lng: longitude }} />
           </GoogleMap>
@@ -170,5 +175,4 @@ function Register() {
     </div>
   );
 }
-
 export default Register;

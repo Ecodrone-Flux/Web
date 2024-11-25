@@ -3,7 +3,7 @@ import "../Styles/App.css";
 import { Link } from "react-router-dom";
 import leafImage from "../Images/leaf.png";
 
-function Home() {
+function Splash() {
   return (
     <div className="container-fluid vh-100 d-flex flex-column justify-content-between bg-green">
       {/* Header con el botón de login */}
@@ -26,4 +26,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default Splash;
