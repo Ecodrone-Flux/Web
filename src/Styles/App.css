@@ -27,3 +27,20 @@
   background-color: #ECFFF2; /* Fondo claro */
   overflow-y: auto; /* Habilita scroll si el contenido es muy largo */
 }
+
+
+
+
+.card {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.card-title {
+  font-weight: bold;
+}
+
+.card-body {
+  background-color: #f9f9f9;
+}
+

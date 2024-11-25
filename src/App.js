@@ -5,6 +5,7 @@ import Splash from "./Administrator/Splash";
 import Login from "./Administrator/Login";
 import Register from "./Administrator/Users/Register";
 import Users from "./Administrator/Users/Users";
+import Home from "./Administrator/Home";
 
 function App() {
   return (
@@ -14,7 +15,8 @@ function App() {
         <Route path="/login" element={<Login />} />
 
         <Route path="/register" element={<Layout> <Register /> </Layout>}/>
-        <Route path="/users" element={<Layout> <Register /> </Layout>}/>
+        <Route path="/users" element={<Layout> <Users /> </Layout>}/>
+        <Route path="/home" element={<Layout> <Home /> </Layout>}/>
       </Routes>
     </Router>
   );
