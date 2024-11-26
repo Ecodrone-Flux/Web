@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import '../../Styles/App.css'
 
 function Users() {
@@ -29,19 +30,13 @@ function Users() {
       <h1 className="mb-4">Users List</h1>
       <div className="row">
         {users.map((user) => (
-          <div className="col-md-4 mb-3" key={user.id}>
+          <div className="col-md-3 mb-3" key={user.id}>
             <div className="card shadow-sm">
-              <img
-                src="https://via.placeholder.com/150"
-                alt="User Avatar"
-                className="card-img-top"
-                style={{ objectFit: "cover", height: "150px" }}
-              />
               <div className="card-body text-center">
                 <h5 className="card-title">{`${user.name} ${user.lastname}`}</h5>
                 <p className="card-text">{user.address}</p>
                 <p className="card-text text-muted">{user.email}</p>
-                <button className="btn btn-warning">Edit User</button>
+                <Link to="/updateuser"><button className="btn btn-warning">Edit User</button></Link>
               </div>
             </div>
           </div>

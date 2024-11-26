@@ -24,17 +24,39 @@ const Sidebar = () => {
       <div className="sidebar-menu">
         <div className="menu-section">
           <div className="menu-title">
-            <i className="fas fa-home"></i> Home
+            <i className="fas fa-home"></i> Analytics
           </div>
           <ul>
             <li>
-              <Link to="/analytics">Analytics</Link>
+              <Link to="/deforestationmap">Deforestation Map</Link>
             </li>
+            <li>
+              <Link to="/reforestation">Reforestation Suggestions</Link>
+            </li>
+            <li>
+              <Link to="/riskAnalysis">Risk Analysis</Link>
+            </li>
+          </ul>
+        </div>
+
+        <div className="menu-section">
+          <div className="menu-title">
+            <i className="fas fa-home"></i> Alerts
+          </div>
+          <ul>
             <li>
               <Link to="/alerts">Alerts and Notifications</Link>
             </li>
+          </ul>
+        </div>
+
+        <div className="menu-section">
+          <div className="menu-title">
+            <i className="fas fa-home"></i> Drones
+          </div>
+          <ul>
             <li>
-              <Link to="/drones">Drones</Link>
+              <Link to="/addDrone">Add Drone</Link>
             </li>
           </ul>
         </div>

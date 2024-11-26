@@ -79,9 +79,6 @@ function Login() {
               Log In
             </button>
           </form>
-          <p className="mt-3">
-            Don't have an account? <a href="/register" className="fw-bold text-dark">Sign up here.</a>
-          </p>
         </div>
 
         {/* Sección derecha: Imagen */}
