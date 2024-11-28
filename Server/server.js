@@ -33,6 +33,7 @@ app.get('/', (req, res) => {
   res.send('Hola desde el servidor!');
 });
 
+
 // Ruta para registrar un usuario
 app.post('/users', async (req, res) => {
   const { name, email, password, phoneNumber, latitude, longitude, lastname, address } = req.body;
@@ -100,6 +101,17 @@ app.post('/login', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send('Error al iniciar sesión');
+  }
+});
+
+// Ruta para obtener todas las alertas
+app.get('/alerts', async (req, res) => {
+  try {
+    const result = await client.query('SELECT * FROM alert');
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error al obtener las alertas');
   }
 });
 
