@@ -25,17 +25,6 @@
     height: 40px;
   }
   
-  .sidebar-profile {
-    margin-bottom: 10px;
-  }
-  
-  .profile-pic {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    border: 3px solid #fff;
-  }
-  
   .sidebar-menu {
     flex-grow: 1;
     width: 100%;
@@ -75,7 +64,8 @@
   }
   
   .menu-section ul li a:hover {
-    text-decoration: underline;
+    background-color: #a1d2c3;
+    padding: 8px;
   }
   
   .sidebar-logout {

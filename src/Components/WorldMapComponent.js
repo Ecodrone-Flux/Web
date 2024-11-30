@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 
-const MapComponent = () => {
+const WorldMapComponent = () => {
   const markers = [
     { coords: { lat: 31.230391, lng: 121.473701 }, name: "Shanghai" },
     { coords: { lat: 28.704060, lng: 77.102493 }, name: "Delhi" },
@@ -74,4 +74,4 @@ const MapComponent = () => {
   );
 };
 
-export default MapComponent;
+export default WorldMapComponent;

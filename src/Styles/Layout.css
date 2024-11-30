@@ -1,0 +1,14 @@
+.layout {
+  display: flex;
+  height: 100vh; /* Altura de toda la ventana */
+}
+
+.sidebar-open .main-container {
+  margin-left: 250px; /* Ancho del Sidebar */
+  transition: margin-left 0.3s ease;
+}
+
+.sidebar-closed .main-container {
+  margin-left: 0;
+  transition: margin-left 0.3s ease;
+}

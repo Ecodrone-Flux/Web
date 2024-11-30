@@ -15,22 +15,6 @@
   font-size: 1.2rem;
 }
 
-.layout {
-  display: flex;
-  height: 100vh;
-  overflow: hidden; /* Evita desplazamientos no deseados */
-}
-
-.content {
-  flex: 1; /* Permite que esta área ocupe todo el espacio restante */
-  padding: 20px;
-  background-color: #ECFFF2; /* Fondo claro */
-  overflow-y: auto; /* Habilita scroll si el contenido es muy largo */
-}
-
-
-
-
 .card {
   border-radius: 10px;
   overflow: hidden;

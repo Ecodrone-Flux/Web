@@ -2,7 +2,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "../Styles/SideBar.css";
-import profilePic from "../Images/user.png";
 import leafImage from "../Images/leaf.png";
 
 const Sidebar = () => {
@@ -13,11 +12,6 @@ const Sidebar = () => {
         <h2 className="sidebar-logo">
           ECODRONE <img src={leafImage} alt="leaf" className="logo-icon"/>
         </h2>
-      </div>
-
-      {/* Profile Section */}
-      <div className="sidebar-profile">
-        <img src={profilePic} alt="Profile" className="profile-pic" />
       </div>
 
       {/* Menu Items */}

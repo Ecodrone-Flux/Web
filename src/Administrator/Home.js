@@ -1,7 +1,7 @@
 import React from "react";
 import "../Styles/App.css";
 import ChartDashboard from "../Components/ChartDashboard";
-import WorldMap from "../Components/MapComponent";
+import WorldMap from "../Components/WorldMapComponent";
 
 function Home() {
   return (
