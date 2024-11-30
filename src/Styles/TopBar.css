@@ -33,6 +33,7 @@
   position: relative;
   gap: 10px;
   cursor: pointer;
+  padding: 15px;
 }
 
 .user-avatar {
@@ -42,7 +43,6 @@
 }
 
 .user-menu .dropdown {
-  display: none;
   position: absolute;
   top: 60px;
   right: 0;
@@ -51,10 +51,6 @@
   border-radius: 5px;
   overflow: hidden;
   z-index: 10;
-}
-
-.user-menu:hover .dropdown {
-  display: block;
 }
 
 .user-menu .dropdown ul {

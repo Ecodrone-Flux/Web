@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
-import bcrypt from "bcryptjs"; 
+import CryptoJS from "crypto-js";
 
 function Register() {
   const [name, setName] = useState("");
@@ -66,10 +66,10 @@ function Register() {
     fetchAddress(newLat, newLng); // Actualizar dirección con las nuevas coordenadas
   };
 
-  // Función para cifrar la contraseña antes de enviarla
   const encryptPassword = (password) => {
-    const salt = bcrypt.genSaltSync(10); // Generar un salt
-    return bcrypt.hashSync(password, salt); // Cifrar la contraseña
+    const secretKey = "my-secret-key"; // Debes definir una clave secreta segura para AES
+    const encryptedPassword = CryptoJS.AES.encrypt(password, secretKey).toString();
+    return encryptedPassword;
   };
   
   const registerUser = async () => {
@@ -96,7 +96,9 @@ function Register() {
     const data = await response.json();
     alert(`User ${data.name} registered successfully`);
   };
+
   if (!isLoaded) return <div>Loading map...</div>;
+  
   return (
     <div className="container py-3 mx-5">
       <h1 className="mb-4 text-align-start">Register User</h1>
