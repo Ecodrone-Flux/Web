@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
-import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+import { GoogleMap, Marker } from '@react-google-maps/api';
+import { useGoogleMaps } from './GoogleMapsContext';
 
 const WorldMapComponent = () => {
   const markers = [
@@ -15,6 +16,9 @@ const WorldMapComponent = () => {
 
   const mapRef = useRef(); // Ref para almacenar la instancia del mapa
 
+  // Usamos el hook del contexto para verificar si la API de Google Maps se ha cargado
+  const { isLoaded } = useGoogleMaps();
+
   const handleMarkerClick = (coords) => {
     setCenter(coords); // Cambia el centro del mapa al marcador clickeado
     setZoom(15); // Aumenta el zoom cuando se hace clic en un marcador
@@ -27,7 +31,7 @@ const WorldMapComponent = () => {
     setCenter(initialCenter); // Restaura el centro inicial
     setZoom(initialZoom); // Restaura el zoom inicial
     if (mapRef.current) {
-      mapRef.current.setZoom(initialZoom); // Ajusta el zoom del mapa
+      mapRef.current.setZoom(initialZoom); // Ajusta el zoom inicial
     }
   };
 
@@ -42,34 +46,34 @@ const WorldMapComponent = () => {
     }
   };
 
+  if (!isLoaded) return <div>Loading map...</div>; // Muestra un mensaje mientras la API no esté cargada
+
   return (
     <div>
       <button onClick={resetView} style={{ marginBottom: '10px' }}>
         Volver a la vista inicial
       </button>
-      <LoadScript googleMapsApiKey="AIzaSyA-dqS5UsYWq-v-iwMTlqUsqh7sAFjgSs8">
-        <GoogleMap
-          mapContainerStyle={{ width: '80%', height: '400px' }}
-          center={center}
-          zoom={zoom}
-          onLoad={(map) => {
-            mapRef.current = map; // Guardamos la referencia al mapa
-            map.addListener('zoom_changed', enforceZoomLimits); // Añadimos el listener para controlar el zoom
-          }}
-          options={{
-            minZoom: initialZoom, // Nivel mínimo de zoom directamente en las opciones del mapa
-          }}
-        >
-          {markers.map((marker) => (
-            <Marker
-              key={marker.name} // Asegúrate de que la clave del marcador sea única
-              position={marker.coords}
-              title={marker.name}
-              onClick={() => handleMarkerClick(marker.coords)} // Llama a la función handleMarkerClick cuando se hace clic
-            />
-          ))}
-        </GoogleMap>
-      </LoadScript>
+      <GoogleMap
+        mapContainerStyle={{ width: '80%', height: '400px' }}
+        center={center}
+        zoom={zoom}
+        onLoad={(map) => {
+          mapRef.current = map; // Guardamos la referencia al mapa
+          map.addListener('zoom_changed', enforceZoomLimits); // Añadimos el listener para controlar el zoom
+        }}
+        options={{
+          minZoom: initialZoom, // Nivel mínimo de zoom directamente en las opciones del mapa
+        }}
+      >
+        {markers.map((marker) => (
+          <Marker
+            key={marker.name} // Asegúrate de que la clave del marcador sea única
+            position={marker.coords}
+            title={marker.name}
+            onClick={() => handleMarkerClick(marker.coords)} // Llama a la función handleMarkerClick cuando se hace clic
+          />
+        ))}
+      </GoogleMap>
     </div>
   );
 };

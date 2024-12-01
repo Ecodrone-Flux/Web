@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
-import CryptoJS from "crypto-js";
+import { GoogleMap, Marker } from "@react-google-maps/api";
+import { useGoogleMaps } from "../../Components/GoogleMapsContext"; 
 
 function Register() {
   const [name, setName] = useState("");
@@ -12,9 +12,8 @@ function Register() {
   const [address, setAddress] = useState("Loading...");
   const [latitude, setLatitude] = useState("");
   const [longitude, setLongitude] = useState("");
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: "AIzaSyA-dqS5UsYWq-v-iwMTlqUsqh7sAFjgSs8",
-  });
+
+  const { isLoaded } = useGoogleMaps(); 
 
   useEffect(() => {
     // Verificar si geolocalización está disponible
@@ -60,16 +59,10 @@ function Register() {
   const handleMapDblClick = (event) => {
     const newLat = event.latLng.lat();
     const newLng = event.latLng.lng();
-    console.log("New coordinates:", { lat: newLat, lng: newLng }); // Depurar coordenadas
+    console.log("New coordinates:", { lat: newLat, lng: newLng });
     setLatitude(newLat);
     setLongitude(newLng);
     fetchAddress(newLat, newLng); // Actualizar dirección con las nuevas coordenadas
-  };
-
-  const encryptPassword = (password) => {
-    const secretKey = "my-secret-key"; // Debes definir una clave secreta segura para AES
-    const encryptedPassword = CryptoJS.AES.encrypt(password, secretKey).toString();
-    return encryptedPassword;
   };
   
   const registerUser = async () => {
@@ -77,24 +70,31 @@ function Register() {
       alert("Please complete all fields correctly");
       return;
     }
-    const encryptedPassword = encryptPassword(password);
-    
-    const response = await fetch("http://localhost:5000/users", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name,
-        email,
-        password: encryptedPassword,
-        phoneNumber,
-        latitude,
-        longitude,
-        lastname,
-        address
-      }),
-    });
-    const data = await response.json();
-    alert(`User ${data.name} registered successfully`);
+    try {
+      const response = await fetch("http://localhost:5000/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+          phoneNumber,
+          latitude,
+          longitude,
+          lastname,
+          address
+        }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        alert(`User ${data.name} registered successfully`);
+      } else {
+        alert(data.message || "An error occurred during registration");
+      }
+    } catch (error) {
+      console.error("Error during registration:", error);
+      alert("An error occurred. Please try again.");
+    }
   };
 
   if (!isLoaded) return <div>Loading map...</div>;

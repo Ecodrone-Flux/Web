@@ -14,13 +14,13 @@ function Login() {
   // Función para manejar el login
   const handleLogin = async (e) => {
     e.preventDefault(); // Prevenir el comportamiento por defecto del formulario
-
+  
     // Validación básica de los campos
     if (!email || !password) {
       setErrorMessage("Please enter both email and password.");
       return;
     }
-
+  
     try {
       // Realizar la solicitud de login
       const response = await fetch("http://localhost:5000/login", {
@@ -30,12 +30,11 @@ function Login() {
         },
         body: JSON.stringify({ email, password }),
       });
-
+  
       const data = await response.json();
-
       if (response.ok) {
         alert("Login successful!");
-        navigate("/home"); 
+        navigate("/home");
       } else {
         // Si ocurre un error, mostrar el mensaje de error
         setErrorMessage(data.message || "Login failed. Please try again.");
@@ -44,7 +43,7 @@ function Login() {
       setErrorMessage("An error occurred. Please try again.");
       console.error("Error during login:", error);
     }
-  };
+  };  
 
   return (
     <div className="container-fluid vh-100 d-flex align-items-center bg-green">

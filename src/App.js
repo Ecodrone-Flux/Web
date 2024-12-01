@@ -1,4 +1,5 @@
 import React from "react";
+import { GoogleMapsProvider } from "./Components/GoogleMapsContext";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Layout from "./SideBar/Layout";
 import Splash from "./Administrator/Splash";
@@ -20,7 +21,8 @@ import CreateDrone from "./Administrator/Drones/CreateDrone";
 
 function App() {
   return (
-    <Router>
+    <GoogleMapsProvider>
+      <Router>
       <Routes>
         <Route path="/" element={<Splash />} />
         <Route path="/login" element={<Login />} />
@@ -42,6 +44,7 @@ function App() {
         
       </Routes>
     </Router>
+    </GoogleMapsProvider>
   );
 }
 
