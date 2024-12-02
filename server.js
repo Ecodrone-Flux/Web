@@ -124,7 +124,106 @@ app.get('/alerts', async (req, res) => {
   }
 });
 
-// Iniciar servidor
-app.listen(port, () => {
-  console.log(`Servidor backend corriendo en http://localhost:${port}`);
+
+//--------------------------------------------------------------------------------
+
+const multer = require("multer");
+const crypto = require("crypto");
+const axios = require("axios");
+
+// Configura el almacenamiento de los archivos en memoria
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+// Credenciales y configuración
+const accessKeyId = "45SWVQEAMNIS7EB2MWFV";
+const secretAccessKey = "MbxYKX8BBs4Gml7sDghgdT5xgxc6E0RIpCYepLxs";
+const bucketName = "ecodrone-images";
+const endpoint = "https://obs.la-south-2.myhuaweicloud.com"; // OBS endpoint
+
+// Ruta para subir imágenes con firma en el encabezado
+app.post("/upload-header", upload.single("image"), async (req, res) => {
+  try {
+    const file = req.file; // Imagen recibida del formulario
+    if (!file) {
+      return res.status(400).json({ message: "No se recibió ninguna imagen." });
+    }
+
+    const fileName = file.originalname;
+    const date = new Date().toUTCString(); // Fecha en formato RFC1123
+
+    // Generar StringToSign y firma
+    const stringToSign = generateStringToSignHeader(date, fileName);
+    const signature = generateSignature(stringToSign);
+    const authorization = `OBS ${accessKeyId}:${signature}`;
+
+    // Encabezados
+    const headers = {
+      "Content-Type": "application/octet-stream",
+      "x-obs-date": date,
+      Authorization: authorization,
+    };
+
+    // Realizar solicitud PUT para subir la imagen
+    const uploadResponse = await axios.put(
+      `${endpoint}/${bucketName}/${fileName}`,
+      file.buffer,
+      { headers }
+    );
+
+    const imageUrl = `${endpoint}/${bucketName}/${fileName}`;
+    res.json({ message: "Imagen cargada exitosamente.", fileUrl: imageUrl });
+  } catch (error) {
+    console.error("Error al cargar la imagen:", error.response?.data || error);
+    res.status(500).json({
+      message: "Error al cargar la imagen",
+      error: error.response?.data || error.message,
+    });
+  }
 });
+
+// Ruta para obtener una URL firmada
+app.get("/generate-signed-url", (req, res) => {
+  try {
+    const fileName = req.query.fileName || "default.jpg"; // Nombre del archivo
+    const expires = Math.floor(Date.now() / 1000) + 3600; // Tiempo de expiración (1 hora desde ahora)
+
+    // Generar StringToSign y firma
+    const stringToSign = generateStringToSignURL(expires, fileName);
+    const signature = generateSignature(stringToSign);
+
+    // Construir URL firmada
+    const signedUrl = `${endpoint}/${bucketName}/${fileName}?AWSAccessKeyId=${accessKeyId}&Expires=${expires}&Signature=${encodeURIComponent(signature)}`;
+    res.json({ signedUrl });
+  } catch (error) {
+    console.error("Error al generar la URL firmada:", error);
+    res.status(500).json({ message: "Error al generar la URL firmada" });
+  }
+});
+
+// Función para generar StringToSign para encabezados
+function generateStringToSignHeader(date, fileName) {
+  return `PUT\n\napplication/octet-stream\n${date}\n/${bucketName}/${fileName}`;
+}
+
+// Función para generar StringToSign para URL firmada
+function generateStringToSignURL(expires, fileName) {
+  return `GET\n\n\n${expires}\n/${bucketName}/${fileName}`;
+}
+
+// Función para generar la firma
+function generateSignature(stringToSign) {
+  return crypto
+    .createHmac("sha1", secretAccessKey)
+    .update(stringToSign)
+    .digest("base64");
+}
+
+// --------------------------------------------------------------------------
+
+
+// Iniciar servidor
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Servidor backend corriendo en http://0.0.0.0:${port}`);
+});
+
