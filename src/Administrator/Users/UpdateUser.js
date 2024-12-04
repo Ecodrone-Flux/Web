@@ -21,7 +21,7 @@ function UploadImage() {
       // Solicitar la URL firmada
       const fileName = encodeURIComponent(image.name);
       const signedUrlResponse = await fetch(
-        `http://localhost:5000/generate-signed-url?fileName=${fileName}`
+        `${process.env.REACT_APP_API_URL}/generate-signed-url?fileName=${fileName}`
       );
   
       if (!signedUrlResponse.ok) {

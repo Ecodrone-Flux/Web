@@ -19,7 +19,7 @@ const WorldMapComponent = () => {
   useEffect(() => {
     const fetchAlerts = async () => {
       try {
-        const response = await fetch("http://localhost:5000/alerts");
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/alerts`);
         const data = await response.json();
         setAlerts(data); // Almacena las alertas en el estado
         console.log(data);
