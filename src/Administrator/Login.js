@@ -12,38 +12,41 @@ function Login() {
   const navigate = useNavigate();
   
   // Función para manejar el login
-  const handleLogin = async (e) => {
-    e.preventDefault(); // Prevenir el comportamiento por defecto del formulario
+  // En Login.js
+const handleLogin = async (e) => {
+  e.preventDefault();
   
-    // Validación básica de los campos
-    if (!email || !password) {
-      setErrorMessage("Please enter both email and password.");
-      return;
+  // Validación básica
+  if (!email || !password) {
+    setErrorMessage("Please enter both email and password.");
+    return;
+  }
+
+  try {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+      // Guarda el nombre del usuario en el localStorage o estado global
+      localStorage.setItem("userId", data.user.id);
+      localStorage.setItem("userName", data.user.name);
+      navigate("/home");
+      alert("Login successful!");
+    } else {
+      setErrorMessage(data.message || "Login failed. Please try again.");
     }
-  
-    try {
-      // Realizar la solicitud de login
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-  
-      const data = await response.json();
-      if (response.ok) {
-        alert("Login successful!");
-        navigate("/home");
-      } else {
-        // Si ocurre un error, mostrar el mensaje de error
-        setErrorMessage(data.message || "Login failed. Please try again.");
-      }
-    } catch (error) {
-      setErrorMessage("An error occurred. Please try again.");
-      console.error("Error during login:", error);
-    }
-  };  
+  } catch (error) {
+    setErrorMessage("An error occurred. Please try again.");
+    console.error("Error during login:", error);
+  }
+};
+
 
   return (
     <div className="container-fluid vh-100 d-flex align-items-center bg-green">
