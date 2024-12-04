@@ -2,7 +2,7 @@
     width: 250px;
     background-color: #C3DED6;
     color: rgb(0, 0, 0);
-    height: 100vh;
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;

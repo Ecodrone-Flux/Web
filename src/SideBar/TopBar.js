@@ -20,11 +20,7 @@ const TopBar = ({ toggleSidebar }) => {
         <FaBars />
       </button>
 
-      {/* Elementos de la derecha */}
       <div className="right-section">
-        <FaBell className="icon" />
-        <FaCommentDots className="icon" />
-
         {/* Menú del usuario */}
         <div
           className="user-menu"

@@ -50,7 +50,7 @@ const Sidebar = () => {
           </div>
           <ul>
             <li>
-              <Link to="/addDrone">Add Drone</Link>
+              <Link to="/drones">Drones</Link>
             </li>
           </ul>
         </div>
@@ -61,7 +61,7 @@ const Sidebar = () => {
           </div>
           <ul>
             <li>
-              <Link to="/register">New User</Link>
+              <Link to="/register">Register User</Link>
             </li>
             <li>
               <Link to="/users">Users</Link>

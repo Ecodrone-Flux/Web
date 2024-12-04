@@ -81,10 +81,96 @@ app.post('/users', async (req, res) => {
   
 });
 
+// Ruta para actualizar un usuario existente
+app.put('/users/:userId', async (req, res) => {
+  const { userId } = req.params;
+  const { name, email, phoneNumber, latitude, longitude, lastname, address, status } = req.body;
+
+  try {
+    // Construir consulta dinámica para solo actualizar campos proporcionados
+    const updates = [];
+    const values = [];
+    let query = 'UPDATE users SET ';
+
+    if (name) {
+      updates.push('name = $' + (values.length + 1));
+      values.push(name);
+    }
+    if (email) {
+      updates.push('email = $' + (values.length + 1));
+      values.push(email);
+    }
+    if (phoneNumber) {
+      updates.push('phoneNumber = $' + (values.length + 1));
+      values.push(phoneNumber);
+    }
+    if (latitude) {
+      updates.push('latitude = $' + (values.length + 1));
+      values.push(latitude);
+    }
+    if (longitude) {
+      updates.push('longitude = $' + (values.length + 1));
+      values.push(longitude);
+    }
+    if (lastname) {
+      updates.push('lastname = $' + (values.length + 1));
+      values.push(lastname);
+    }
+    if (address) {
+      updates.push('address = $' + (values.length + 1));
+      values.push(address);
+    }
+    if (status !== undefined) { // Asegurarse de que 'status' sea incluido si está presente en el body
+      updates.push('status = $' + (values.length + 1));
+      values.push(status);  // Añadir el valor del status (1 o 0)
+    }
+
+    if (updates.length === 0) {
+      return res.status(400).json({ message: 'No fields provided for update.' });
+    }
+
+    query += updates.join(', ') + ' WHERE id = $' + (values.length + 1) + ' RETURNING *';
+    values.push(userId);
+
+    // Ejecutar la consulta
+    const result = await client.query(query, values);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error updating user.' });
+  }
+});
+
+
+// Ruta para obtener un usuario por ID
+app.get('/users/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Consultar el usuario por su ID y asegurarse de que el status sea 1
+    const result = await client.query('SELECT * FROM users WHERE id = $1 AND status = 1', [id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'User not found or inactive' });
+    }
+
+    // Retornar los datos del usuario encontrado
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error fetching user' });
+  }
+});
+
 // Ruta para obtener todos los usuarios
 app.get('/users', async (req, res) => {
   try {
-    const result = await client.query('SELECT * FROM users');
+    const result = await client.query('SELECT * FROM users WHERE status = 1');
     res.json(result.rows);
   } catch (err) {
     console.error(err);
@@ -143,6 +229,78 @@ app.get('/alerts', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Error getting alerts' });
+  }
+});
+
+// Ruta para obtener todos los drones
+app.get('/drones', async (req, res) => {
+  try {
+    const result = await client.query("SELECT * FROM drone WHERE status != 'Not Available'");
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error getting drones.' });
+  }
+});
+
+app.post('/drones', async (req, res) => {
+  const { model } = req.body;
+
+  try {
+    if (!model) {
+      return res.status(400).json({ message: 'Drone model is required.' });
+    }
+
+    const result = await client.query(
+      'INSERT INTO drone (model) VALUES ($1) RETURNING *',
+      [model]
+    );
+
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error('Error creating drone:', err);
+    res.status(500).json({ message: 'Error creating drone', error: err.message });
+  }
+});
+
+
+app.put('/drones/:droneId', async (req, res) => {
+  const { droneId } = req.params;
+  const { model, status } = req.body;
+
+  try {
+    const updateFields = [];
+    const values = [];
+
+    if (model) {
+      updateFields.push('model = $' + (updateFields.length + 1));
+      values.push(model);
+    }
+
+    if (status) {
+      updateFields.push('status = $' + (updateFields.length + 1));
+      values.push(status);
+    }
+
+    // Si no se proporcionan cambios, no hacemos nada
+    if (updateFields.length === 0) {
+      return res.status(400).json({ message: 'No data to update.' });
+    }
+
+    // Ejecutamos la actualización
+    const result = await client.query(
+      `UPDATE drone SET ${updateFields.join(', ')} WHERE id = $${updateFields.length + 1} RETURNING *`,
+      [...values, droneId]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'Drone not found.' });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error updating drone data.' });
   }
 });
 

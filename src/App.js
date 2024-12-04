@@ -17,7 +17,7 @@ import DeforestationMap from "./Administrator/Analytics/DeforestationMap";
 import ReforestationSuggestions from "./Administrator/Analytics/ReforestationSuggestions";
 import RiskAnalysis from "./Administrator/Analytics/RiskAnalysis";
 
-import CreateDrone from "./Administrator/Drones/CreateDrone";
+import Drones from "./Administrator/Drones/Drones";
 
 function App() {
   return (
@@ -31,7 +31,7 @@ function App() {
 
         <Route path="/register" element={<Layout> <Register /> </Layout>}/>
         <Route path="/users" element={<Layout> <Users /> </Layout>}/>
-        <Route path="/updateuser" element={<Layout> <UpdateUser /> </Layout>}/>
+        <Route path="/updateuser/:id" element={<Layout> <UpdateUser /> </Layout>}/>
 
         <Route path="/alerts" element={<Layout> <Alerts /> </Layout>}/>
         <Route path="/alertdetail" element={<Layout> <AlertDetail /> </Layout>}/>
@@ -40,7 +40,7 @@ function App() {
         <Route path="/reforestation" element={<Layout> <ReforestationSuggestions /> </Layout>}/>
         <Route path="/riskAnalysis" element={<Layout> <RiskAnalysis /> </Layout>}/>
 
-        <Route path="/addDrone" element={<Layout> <CreateDrone /> </Layout>}/>
+        <Route path="/drones" element={<Layout> <Drones /> </Layout>}/>
         
       </Routes>
     </Router>

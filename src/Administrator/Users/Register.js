@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { GoogleMap, Marker } from "@react-google-maps/api";
 import { useGoogleMaps } from "../../Components/GoogleMapsContext"; 
 
@@ -14,6 +15,7 @@ function Register() {
   const [longitude, setLongitude] = useState("");
 
   const { isLoaded } = useGoogleMaps(); 
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Verificar si geolocalización está disponible
@@ -88,6 +90,7 @@ function Register() {
       const data = await response.json();
       if (response.ok) {
         alert(`User ${data.name} registered successfully`);
+        navigate("/Users");
       } else {
         alert(data.message || "An error occurred during registration");
       }
@@ -169,9 +172,12 @@ function Register() {
           </GoogleMap>
         </div>
       </div>
-      <div className="mt-4 d-flex justify-content-center">
+      <div className="mt-4 d-flex justify-content-center align-items-center gap-2 col-9 mx-auto">
         <button className="btn btn-success w-50" onClick={registerUser}>
-          Register
+        Register
+        </button>
+        <button className="btn btn-secondary w-50" onClick={() => navigate("/Users")}>
+          Cancel
         </button>
       </div>
     </div>
