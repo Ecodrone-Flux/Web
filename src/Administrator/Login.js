@@ -11,9 +11,7 @@ function Login() {
 
   const navigate = useNavigate();
   
-  // Función para manejar el login
-  // En Login.js
-const handleLogin = async (e) => {
+  const handleLogin = async (e) => {
   e.preventDefault();
   
   // Validación básica
@@ -37,7 +35,6 @@ const handleLogin = async (e) => {
       localStorage.setItem("userId", data.user.id);
       localStorage.setItem("userName", data.user.name);
       navigate("/firespots");
-      alert("Login successful!");
     } else {
       setErrorMessage(data.message || "Login failed. Please try again.");
     }

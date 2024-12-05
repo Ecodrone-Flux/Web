@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { GoogleMap, Marker } from "@react-google-maps/api";
 import { useGoogleMaps } from "../../Components/GoogleMapsContext"; 
+import CustomModal from "../../Components/CustomModal";
 
 function Register() {
   const [name, setName] = useState("");
@@ -16,6 +17,11 @@ function Register() {
 
   const { isLoaded } = useGoogleMaps(); 
   const navigate = useNavigate();
+
+  // Estado para el modal
+  const [modalShow, setModalShow] = useState(false);
+  const [modalTitle, setModalTitle] = useState("");
+  const [modalMessage, setModalMessage] = useState("");
 
   useEffect(() => {
     // Verificar si geolocalización está disponible
@@ -89,7 +95,23 @@ function Register() {
       });
       const data = await response.json();
       if (response.ok) {
-        alert(`User ${data.name} registered successfully`);
+        // Mostrar el modal de éxito
+        setModalTitle("Success");
+        setModalMessage(`User ${data.name} registered successfully`);
+        setModalShow(true);
+
+        // Limpiar los campos después del registro exitoso
+        setName("");
+        setLastName("");
+        setPhoneNumber("");
+        setEmail("");
+        setPassword("");
+        setConfirmPassword("");
+        setAddress("Loading...");
+        setLatitude("");
+        setLongitude("");
+  
+        // Navegar a la página de usuarios
         navigate("/Users");
       } else {
         alert(data.message || "An error occurred during registration");
@@ -101,7 +123,7 @@ function Register() {
   };
 
   if (!isLoaded) return <div>Loading map...</div>;
-  
+
   return (
     <div className="container py-3 mx-5">
       <h1 className="mb-4 text-align-start">Register User</h1>
@@ -174,13 +196,22 @@ function Register() {
       </div>
       <div className="mt-4 d-flex justify-content-center align-items-center gap-2 col-9 mx-auto">
         <button className="btn btn-success w-50" onClick={registerUser}>
-        Register
+          Register
         </button>
         <button className="btn btn-secondary w-50" onClick={() => navigate("/Users")}>
           Cancel
         </button>
       </div>
+
+      {/* Mostrar el modal de éxito */}
+      <CustomModal
+        show={modalShow}
+        title={modalTitle}
+        message={modalMessage}
+        onClose={() => setModalShow(false)} // Cerrar el modal
+      />
     </div>
   );
 }
+
 export default Register;
