@@ -4,6 +4,12 @@ import { Link } from "react-router-dom";
 import "../Styles/SideBar.css";
 import leafImage from "../Images/leaf.png";
 
+const handleLogout = () => {
+  localStorage.removeItem("userName");
+  localStorage.removeItem("userId");
+  window.location.href = "/login";
+};
+
 const Sidebar = () => {
   return (
     <div className="sidebar">
@@ -28,7 +34,7 @@ const Sidebar = () => {
               <Link to="/reforestation">Reforestation Suggestions</Link>
             </li>
             <li>
-              <Link to="/riskAnalysis">Risk Analysis</Link>
+              <Link to="/firespots">Fire Spots</Link>
             </li>
           </ul>
         </div>
@@ -73,7 +79,7 @@ const Sidebar = () => {
       {/* Logout */}
       <div className="sidebar-logout">
         <button className="logout-btn">
-          <i className="fas fa-sign-out-alt"></i> Log Out
+          <i className="fas fa-sign-out-alt" onClick={handleLogout}>  Log out </i>
         </button>
       </div>
     </div>

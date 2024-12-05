@@ -36,7 +36,7 @@ const handleLogin = async (e) => {
       // Guarda el nombre del usuario en el localStorage o estado global
       localStorage.setItem("userId", data.user.id);
       localStorage.setItem("userName", data.user.name);
-      navigate("/home");
+      navigate("/firespots");
       alert("Login successful!");
     } else {
       setErrorMessage(data.message || "Login failed. Please try again.");

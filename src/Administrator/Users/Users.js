@@ -8,6 +8,8 @@ function Users() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
 
+  const loggedInUserName = localStorage.getItem("userName"); // Obtiene el nombre del usuario logueado
+
   // Fetch users
   useEffect(() => {
     const fetchUsers = async () => {
@@ -65,26 +67,28 @@ function Users() {
     <div className="container py-3 mx-5">
       <h1 className="mb-4">Personal Data</h1>
       <div className="row">
-        {users.map((user) => (
-          <div className="col-md-3 mb-3" key={user.id}>
-            <div className="card shadow-sm">
-              <div className="card-body text-center">
-                <h5 className="card-title">{`${user.name} ${user.lastname}`}</h5>
-                <p className="card-text">{user.address}</p>
-                <p className="card-text text-muted">{user.email}</p>
-                <Link to={`/updateuser/${user.id}`}>
-                  <button className="btn btn-warning">Edit</button>
-                </Link>
-                <button
-                  className="btn btn-danger ms-2"
-                  onClick={() => handleDeleteClick(user.id)}
-                >
-                  Delete
-                </button>
+        {users
+          .filter((user) => user.name !== loggedInUserName) // Filtrar usuarios por nombre
+          .map((user) => (
+            <div className="col-md-3 mb-3" key={user.id}>
+              <div className="card shadow-sm">
+                <div className="card-body text-center">
+                  <h5 className="card-title">{`${user.name} ${user.lastname}`}</h5>
+                  <p className="card-text">{user.address}</p>
+                  <p className="card-text text-muted">{user.email}</p>
+                  <Link to={`/updateuser/${user.id}`}>
+                    <button className="btn btn-warning">Edit</button>
+                  </Link>
+                  <button
+                    className="btn btn-danger ms-2"
+                    onClick={() => handleDeleteClick(user.id)}
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
 
       {/* Modal de confirmación */}

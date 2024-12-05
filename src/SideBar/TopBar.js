@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { FaBars} from "react-icons/fa";
 import "../Styles/TopBar.css";
 import profilePic from "../Images/user.png";
@@ -21,6 +22,7 @@ const TopBar = ({ toggleSidebar }) => {
   };
 
   const userName = localStorage.getItem("userName");
+  const userId = localStorage.getItem("userId");
 
   return (
     <div className="topbar">
@@ -41,8 +43,9 @@ const TopBar = ({ toggleSidebar }) => {
           {isDropdownVisible && (
             <div className="dropdown">
               <ul>
-                <li>Profile</li>
-                <li>Analytics</li>
+                <Link to={`/updateuser/${userId}`} class="text-body text-decoration-none">
+                  <li>Profile</li>
+                </Link>
                 <li onClick={handleLogout}>Log out</li>
               </ul>
             </div>
